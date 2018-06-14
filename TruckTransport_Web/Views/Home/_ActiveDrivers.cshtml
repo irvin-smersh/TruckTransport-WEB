@@ -1,0 +1,57 @@
+﻿@model GetDriversVM
+
+
+<div id="drivers-partial-result">
+    <div class="box box-danger">
+        <div class="box-header">
+            <h3 class="text-center">@SiteResources.ActiveDrivers</h3>
+        </div>
+        <div class="box-body">
+            <table id="active-drivers-data-table" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>@SiteResources.FirstName</th>
+                        <th>@SiteResources.LastName</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var driver in Model.DriversList)
+                    {
+                        <tr>
+                            <td class="col-md-2">
+                                @driver.FirstName
+                            </td>
+                            <td class="col-md-2">
+                                @driver.LastName
+                            </td>
+                            <td class="right" width="10%" align="right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-danger">@SiteResources.Actions</button>
+                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="@Url.Action("Details", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-file-text-o"></i>@SiteResources.Details</a></li>
+                                        @if (driver.Status == "Aktivan")
+                                        {
+                                            <li><a href="@Url.Action("GetLatestPosition", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-map"></i>@SiteResources.MapPosition</a></li>                                          
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>@SiteResources.FirstName</th>
+                        <th>@SiteResources.LastName</th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

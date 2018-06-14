@@ -1,0 +1,36 @@
+﻿@model List<ChatUserMessagesVM>
+
+<ul class="contacts-list">
+    @foreach (var user in Model)
+    {
+        <li>
+            <a id="loadMessages-user-@user.DriverID" href="javascript: loadMessages('@user.DriverID')">
+                <img class="contacts-list-img" src="../Content/images/user_avatar_128.png" alt="User Image">
+                <div class="contacts-list-info">
+                    <span class="contacts-list-name">
+                        @user.DriverFullName
+                        @if (user.UserMessages != null && user.UserMessages.Count != 0)
+                        {
+                            <small class="contacts-list-date pull-right">@user.UserMessages.First().CreationTime</small>
+                        }
+                        else
+                        {
+                            <small class="contacts-list-date pull-right"></small>
+                        }
+                    </span>
+                    @if (user.UserMessages != null && user.UserMessages.Count != 0)
+                    {
+                        <span class="contacts-list-msg">@user.UserMessages.First().MessageText</span>
+                    }
+                    else
+                    {
+                        <span class="contacts-list-msg"></span>
+                    }
+                </div>
+                <!-- /.contacts-list-info -->
+            </a>
+        </li>
+        <!-- End Contact Item -->
+    }
+</ul>
+<!-- /.contacts-list -->

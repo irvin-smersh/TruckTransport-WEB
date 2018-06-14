@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CCCDF61E-07F0-48E7-82BD-B409FD747D7A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TruckTransport_Data</RootNamespace>
+    <AssemblyName>TruckTransport_Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.10\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.10\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\dispecerlogin.cs" />
+    <Compile Include="Entities\geotacke.cs" />
+    <Compile Include="Entities\kategorije.cs" />
+    <Compile Include="Entities\logiranidogadjaji.cs" />
+    <Compile Include="Entities\nalozi.cs" />
+    <Compile Include="Entities\poruke.cs" />
+    <Compile Include="Entities\postavke.cs" />
+    <Compile Include="Entities\poznatelokacije.cs" />
+    <Compile Include="Entities\stajalista.cs" />
+    <Compile Include="Entities\stajalista_nalozi.cs" />
+    <Compile Include="Entities\stanja.cs" />
+    <Compile Include="DbContext\TruckTransportDbContext.cs" />
+    <Compile Include="Entities\vozaci.cs" />
+    <Compile Include="Entities\vozila.cs" />
+    <Compile Include="Entities\zadaci.cs" />
+    <Compile Include="Migrations\201712301924072_first_migration.cs" />
+    <Compile Include="Migrations\201712301924072_first_migration.Designer.cs">
+      <DependentUpon>201712301924072_first_migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712301939554_dodane_postavke.cs" />
+    <Compile Include="Migrations\201712301939554_dodane_postavke.Designer.cs">
+      <DependentUpon>201712301939554_dodane_postavke.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801141534359_dodana_stajalista_i_stajalista_nalozi.cs" />
+    <Compile Include="Migrations\201801141534359_dodana_stajalista_i_stajalista_nalozi.Designer.cs">
+      <DependentUpon>201801141534359_dodana_stajalista_i_stajalista_nalozi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801161909151_dodano_polje_lokalna_id_u_geotacke.cs" />
+    <Compile Include="Migrations\201801161909151_dodano_polje_lokalna_id_u_geotacke.Designer.cs">
+      <DependentUpon>201801161909151_dodano_polje_lokalna_id_u_geotacke.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801171831149_izmjena_stajalista_zadaci_umjesto_s_nalozi.cs" />
+    <Compile Include="Migrations\201801171831149_izmjena_stajalista_zadaci_umjesto_s_nalozi.Designer.cs">
+      <DependentUpon>201801171831149_izmjena_stajalista_zadaci_umjesto_s_nalozi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801271142016_dodani_logirani_dogadjaji.cs" />
+    <Compile Include="Migrations\201801271142016_dodani_logirani_dogadjaji.Designer.cs">
+      <DependentUpon>201801271142016_dodani_logirani_dogadjaji.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801271234155_izmjena_dispecer_login_lastlogin_unixtime.cs" />
+    <Compile Include="Migrations\201801271234155_izmjena_dispecer_login_lastlogin_unixtime.Designer.cs">
+      <DependentUpon>201801271234155_izmjena_dispecer_login_lastlogin_unixtime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801271545194_dispecer_login_lastlogin_long_nullable.cs" />
+    <Compile Include="Migrations\201801271545194_dispecer_login_lastlogin_long_nullable.Designer.cs">
+      <DependentUpon>201801271545194_dispecer_login_lastlogin_long_nullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802031940216_izmjena_stajalista_nalozi_umjesto_stajalista_zadaci.cs" />
+    <Compile Include="Migrations\201802031940216_izmjena_stajalista_nalozi_umjesto_stajalista_zadaci.Designer.cs">
+      <DependentUpon>201802031940216_izmjena_stajalista_nalozi_umjesto_stajalista_zadaci.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803052036260_nalog_id_nullable_u_zadaci.cs" />
+    <Compile Include="Migrations\201803052036260_nalog_id_nullable_u_zadaci.Designer.cs">
+      <DependentUpon>201803052036260_nalog_id_nullable_u_zadaci.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804171608217_dodano_polje_broj_stajalista_stajalista_nalozi.cs" />
+    <Compile Include="Migrations\201804171608217_dodano_polje_broj_stajalista_stajalista_nalozi.Designer.cs">
+      <DependentUpon>201804171608217_dodano_polje_broj_stajalista_stajalista_nalozi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201712301924072_first_migration.resx">
+      <DependentUpon>201712301924072_first_migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712301939554_dodane_postavke.resx">
+      <DependentUpon>201712301939554_dodane_postavke.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801141534359_dodana_stajalista_i_stajalista_nalozi.resx">
+      <DependentUpon>201801141534359_dodana_stajalista_i_stajalista_nalozi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801161909151_dodano_polje_lokalna_id_u_geotacke.resx">
+      <DependentUpon>201801161909151_dodano_polje_lokalna_id_u_geotacke.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801171831149_izmjena_stajalista_zadaci_umjesto_s_nalozi.resx">
+      <DependentUpon>201801171831149_izmjena_stajalista_zadaci_umjesto_s_nalozi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801271142016_dodani_logirani_dogadjaji.resx">
+      <DependentUpon>201801271142016_dodani_logirani_dogadjaji.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801271234155_izmjena_dispecer_login_lastlogin_unixtime.resx">
+      <DependentUpon>201801271234155_izmjena_dispecer_login_lastlogin_unixtime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801271545194_dispecer_login_lastlogin_long_nullable.resx">
+      <DependentUpon>201801271545194_dispecer_login_lastlogin_long_nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802031940216_izmjena_stajalista_nalozi_umjesto_stajalista_zadaci.resx">
+      <DependentUpon>201802031940216_izmjena_stajalista_nalozi_umjesto_stajalista_zadaci.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803052036260_nalog_id_nullable_u_zadaci.resx">
+      <DependentUpon>201803052036260_nalog_id_nullable_u_zadaci.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804171608217_dodano_polje_broj_stajalista_stajalista_nalozi.resx">
+      <DependentUpon>201804171608217_dodano_polje_broj_stajalista_stajalista_nalozi.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

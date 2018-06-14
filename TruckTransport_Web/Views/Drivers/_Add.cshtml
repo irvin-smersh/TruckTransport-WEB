@@ -1,0 +1,86 @@
+﻿@model AddDriverVM
+
+<div id="modal-block" class="">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title"><i class="fa fa-plus"></i> @SiteResources.Add</h4>
+    </div>
+
+    @using (Ajax.BeginForm("Add", "Drivers", FormMethod.Post, new AjaxOptions { UpdateTargetId = "modal-block", OnSuccess = "hideModal" }, new { id = "add-driver-form", autocomplete = "off" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="modal-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger alert-dismissible animated fadeIn">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <div>
+                        @Html.ValidationSummary(excludePropertyErrors: false)
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.Label(SiteResources.FirstName):
+                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", @placeholder = SiteResources.FirstName })
+            </div>
+
+            <div class="form-group">
+                @Html.Label(SiteResources.LastName):
+                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", @placeholder = SiteResources.LastName })
+            </div>
+
+            <div class="form-group">
+                @Html.Label(SiteResources.PersonUniqueID):
+                @Html.TextBoxFor(x => x.PersonUniqueID, new { @class = "form-control", @placeholder = SiteResources.PersonUniqueID })
+            </div>
+
+            <hr />
+
+            <div class="form-group">
+                @Html.Label(SiteResources.Username):
+                @Html.TextBoxFor(x => x.Username, new { @class = "form-control", @placeholder = SiteResources.Username })
+            </div>
+
+            <div class="form-group">
+                @Html.Label(SiteResources.Password):
+                @Html.PasswordFor(x => x.Password, new { @class = "form-control", @placeholder = SiteResources.Password })
+            </div>
+
+            <div class="form-group">
+                @Html.Label(SiteResources.ConfirmPassword):
+                @Html.PasswordFor(x => x.PasswordConfirm, new { @class = "form-control", @placeholder = SiteResources.ConfirmPassword })
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn bg-gray btn-flat pull-left" data-dismiss="modal">@SiteResources.Close</button>
+            <button id="btnSubmit" type="submit" class="btn bg-red btn-flat">@SiteResources.Save</button>
+        </div>
+    }
+</div>
+
+<script>
+    $('#add-driver-form').submit(function (e) {
+        $('#btnSubmit').prop('disabled', true);
+    });
+
+    function hideModal(data) {
+        if (data.success) {
+            $('#modal-container').modal('hide');
+            $.notify({
+                icon: 'fa fa-check',
+                message: 'Uspješno dodan vozač!'
+            }, {
+                    template: '<div data-notify="container" class="col-md-3 alert btn {0} text-center" role="alert">' +
+                    '<span data-notify="icon"></span>' + '  ' +
+                    '<span data-notify="message">{2}</span>' +
+                    '</div>'
+                });
+            GetDrivers();
+        }
+    }
+</script>
+
+

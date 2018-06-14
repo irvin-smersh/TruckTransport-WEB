@@ -1,0 +1,28 @@
+﻿@model GetDriverDetailsVM
+
+
+<div id="modal-block" class="">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title"><i class="fa fa-file-text-o"></i> @SiteResources.Details</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-5">             
+                <p><strong>@SiteResources.FirstName:</strong> @Model.FirstName</p>
+                <p><strong>@SiteResources.LastName:</strong> @Model.LastName</p>
+                <p><strong>@SiteResources.PersonUniqueID:</strong> @Model.PersonUniqueID</p>
+                <p><strong>@SiteResources.Username:</strong> @Model.Username</p>  
+                <p><strong>@SiteResources.Status:</strong> @Model.Status</p>
+            </div>
+            <div class="col-md-7">
+                <p><strong>@SiteResources.MostUsedVehicle:</strong> @Model.MostUsedVehicle</p>
+                <p><strong>@SiteResources.NumberOfFinishedOrders:</strong> @Model.NumberOfFinishedOrders</p>
+                <p><strong>@SiteResources.NumberOfGivenOrders:</strong> @Model.NumberOfGivenOrders</p>
+                <p><strong>@SiteResources.NumberOfFinishedTasks:</strong> @Model.NumberOfFinishedTasks</p>
+                <p><strong>@SiteResources.NumberOfGivenTasks:</strong> @Model.NumberOfGivenTasks</p>
+            </div>
+        </div>
+    </div>
+</div>

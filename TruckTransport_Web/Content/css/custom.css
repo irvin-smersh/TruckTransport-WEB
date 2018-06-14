@@ -1,0 +1,44 @@
+﻿.bg-white{
+    background:#ffffff;
+}
+
+.color-red{
+    color:red;
+}
+
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover{
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #dd4b39 !important;
+    border-color: #dd4b39 !important;
+}
+
+.box-border{
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.mg-top200{
+    margin-top:200px;
+}
+
+.pd25{
+    padding:25px;
+}
+
+.pd-top20{
+    padding-top:20px;
+}
+
+.pd-bot20{
+    padding-bottom:20px;
+}
+
+.background-error{
+    background:url(../images/truck_bg.jpg);
+}
+
+.border-color-red{
+    border:1px solid red;
+}

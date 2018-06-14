@@ -1,0 +1,208 @@
+﻿@model AddTaskVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.AddTask;
+}
+
+<div id="add-task" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.AddTask</h3>
+                </div>
+                <br />
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.BasicInfo</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @using (Html.BeginForm("Add", "Tasks", FormMethod.Post, new { id = "add-task-form", autocomplete = "off" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+
+                                                if (!ViewData.ModelState.IsValid)
+                                                {
+                                                    <div class="alert alert-danger alert-dismissible animated fadeIn">
+                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                        <div>
+                                                            @Html.ValidationSummary(excludePropertyErrors: false)
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <div class="form-group">
+                                                    @*<div class="alert alert-warning">
+                                                        @SiteResources.TaskNumberWarning
+                                                    </div>*@
+                                                    @Html.Label(SiteResources.TaskNumber)
+                                                    @Html.TextBoxFor(x => x.TaskNumber, new { @class = "form-control", @type = "number", @placeholder = SiteResources.TaskNumber })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Name)
+                                                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @placeholder = SiteResources.Name })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Description)
+                                                    @Html.TextAreaFor(x => x.Description, new { @class = "form-control", @placeholder = SiteResources.Description, @style = "resize:none" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Location)
+                                                    @Html.DropDownListFor(x => x.KnownLocationID, Model.KnownLocations, new { @class = "form-control" })
+                                                    
+                                                    <br />
+
+                                                    <div class="pull-right">
+                                                        <a href="@Url.Action("Add", "KnownLocations")" class="btn btn-danger"><i class="fa fa-plus"></i> @SiteResources.AddNewKnownLocation</a>
+                                                    </div>
+                                                </div>
+
+                                                <br />
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Lat)
+                                                    @Html.TextBoxFor(x => x.Latitude, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Long)
+                                                    @Html.TextBoxFor(x => x.Longitude, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+
+                                                <div class="pull-right">
+                                                    <button id="btnSubmit" type="submit" class="btn bg-red btn-flat">@SiteResources.Save</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.MapLocation</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="map-result" style="width: 100%; height: 584px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        window.onload = function () {
+            initialize();
+        };
+
+        function initialize() {
+            var x = $('#Latitude').val();
+            var y = $('#Longitude').val();
+
+            x = x.replace(",", ".");
+            y = y.replace(",", ".");
+
+            var mapOptions = {
+                center: new google.maps.LatLng(x, y),
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            var map = new google.maps.Map(document.getElementById("map-result"),
+              mapOptions);
+
+            // create a marker
+            var latlng = new google.maps.LatLng(x, y);
+
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                animation: google.maps.Animation.DROP,
+                icon: "../Content/images/marker.png",
+                title: '@Html.Raw(Model.Name)'
+            });
+
+            marker.addListener('click', function () {
+                toggleBounce;
+                infowindow.open(map, marker);
+            });
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+
+            google.maps.event.addListener(marker, 'click', function () {
+                map.setZoom(20);
+                map.setCenter(marker.getPosition());
+            });
+
+            google.maps.event.addListener(map, 'center_changed', function () {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function () {
+                    map.panTo(marker.getPosition());
+                }, 3000);
+            });
+        }
+
+        $('#KnownLocationID').on('change', function () {
+            var id = $(this).val();
+            var latitude = $('#Latitude');
+            var longitude = $('#Longitude');
+
+            $.notify({
+                icon: 'fa fa-spinner',
+                message: 'Učitavanje...'
+            }, {
+                template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                '<span data-notify="icon"></span>' + '  ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+
+            $.ajax({
+                url: '@Url.Action("GetKnownLocationCoordinatesByID", "KnownLocations")',
+                type: "GET",
+                dataType: "JSON",
+                data: {
+                    knownLocationID: id
+                },
+                success: function (data) {
+                    if (data.success) {                     
+                        $(latitude).val(data.latitude);
+                        $(longitude).val(data.longitude);                       
+                        initialize();
+                    }
+                }
+            });
+        });
+
+        $('#add-task-form').submit(function (e) {
+            $('#btnSubmit').prop('disabled', true);
+        });
+    </script>
+}

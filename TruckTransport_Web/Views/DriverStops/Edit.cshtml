@@ -1,0 +1,129 @@
+﻿@model EditDriverStopVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.EditDriverStop;
+}
+
+<div id="edit-driver-stop" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.EditDriverStop</h3>
+                </div>
+                <br />
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.BasicInfo</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @using (Html.BeginForm("Edit", "DriverStops", FormMethod.Post, new { id = "edit-driver-stop-form", autocomplete = "off" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.HiddenFor(x => x.DriverStopID)
+
+                                                if (!ViewData.ModelState.IsValid)
+                                                {
+                                                    <div class="alert alert-danger alert-dismissible animated fadeIn">
+                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                        <div>
+                                                            @Html.ValidationSummary(excludePropertyErrors: false)
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Name)
+                                                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control", @placeholder = SiteResources.Name })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Description)
+                                                    @Html.TextAreaFor(x => x.Description, new { @class = "form-control", @placeholder = SiteResources.Description, @style = "resize:none" })
+                                                </div>                                               
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Lat)
+                                                    @Html.TextBoxFor(x => x.Latitude, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Long)
+                                                    @Html.TextBoxFor(x => x.Longitude, new { @class = "form-control", @readonly = "readonly" })
+                                                </div>
+
+                                                <div class="pull-right">
+                                                    <button id="btnSubmit" type="submit" class="btn bg-red btn-flat">@SiteResources.Save</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.MapLocation</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="map-result" style="width: 100%; height: 584px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        var map;
+
+        var x=@Model.Latitude;
+        var y=@Model.Longitude;
+        if((x==null)||(y==null)){
+            x=43.344361;
+            y=17.811576;
+        }
+
+        function generate_map() {
+            var options = { 'center': new google.maps.LatLng(x, y), 'zoom': 15, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+            var myLatLng = new google.maps.LatLng(x, y);
+
+            map = new google.maps.Map(document.getElementById('map-result'), options);
+            marker = new google.maps.Marker({ position: myLatLng, map: map, icon: "../Content/images/marker.png" });
+
+            google.maps.event.addListener(map, 'click', function (event) {
+                enter_coordinates(event.latLng.lat(), event.latLng.lng());
+                marker.setPosition(new google.maps.LatLng(event.latLng.lat(), event.latLng.lng()));
+            });
+        }
+
+        window.onload = generate_map
+
+        function enter_coordinates(x, y) {
+            $('#Latitude').val(x);
+            $('#Longitude').val(y);
+        }
+
+        $('#edit-driver-stop-form').submit(function (e) {
+            $('#btnSubmit').prop('disabled', true);
+        });
+    </script>
+}
+
+

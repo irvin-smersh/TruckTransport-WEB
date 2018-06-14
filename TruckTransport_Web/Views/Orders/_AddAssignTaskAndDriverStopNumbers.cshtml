@@ -1,0 +1,30 @@
+﻿@model AddOrderVM
+
+<hr />
+
+<h4 class="text-center">@SiteResources.SetTaskNumberAndDriverStopTitle:</h4>
+
+<br />
+
+@for (int i = 0; i < Model.TaskAndDriverStopNumbers.Count; i++)
+{
+    @Html.HiddenFor(model => model.TaskAndDriverStopNumbers[i].ID)
+    @Html.HiddenFor(model => model.TaskAndDriverStopNumbers[i].Name)
+    @Html.HiddenFor(model => model.TaskAndDriverStopNumbers[i].IsTask)
+
+    <div class="form-group">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        @Html.Label(Model.TaskAndDriverStopNumbers[i].Name):
+                    </div>
+
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.TaskAndDriverStopNumbers[i].Number, new { @class = "form-control", @type = "number", @min = "1" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

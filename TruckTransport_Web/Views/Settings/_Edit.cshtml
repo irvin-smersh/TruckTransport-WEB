@@ -1,0 +1,63 @@
+﻿@model EditSettingsVM
+
+<div id="modal-block" class="">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title"><i class="fa fa-edit"></i> @SiteResources.Edit</h4>
+    </div>
+
+    @using (Ajax.BeginForm("Edit", "Settings", FormMethod.Post, new AjaxOptions { UpdateTargetId = "modal-block", OnSuccess = "hideModal" }, new { id = "edit-setting-form", autocomplete = "off" })) {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.SettingID)
+        @Html.HiddenFor(x=>x.KeyName)
+
+        <div class="modal-body">
+            @if (!ViewData.ModelState.IsValid) {
+                <div class="alert alert-danger alert-dismissible animated fadeIn">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <div>
+                        @Html.ValidationSummary(excludePropertyErrors: false)
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.Label(SiteResources.Name):
+                @Html.DisplayFor(x => x.KeyName, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                @Html.Label(SiteResources.Value):
+                @Html.TextBoxFor(x => x.Value, new { @class = "form-control", @placeholder = SiteResources.Value })
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn bg-gray btn-flat pull-left" data-dismiss="modal">@SiteResources.Close</button>
+            <button id="btnSubmit" type="submit" class="btn bg-red btn-flat">@SiteResources.Save</button>
+        </div>
+    }
+</div>
+
+<script>
+    $('#edit-setting-form').submit(function (e) {             
+        $('#btnSubmit').prop('disabled', true);
+    });
+
+    function hideModal(data) {
+        if (data.success) {
+            $('#modal-container').modal('hide');
+            $.notify({
+                icon: 'fa fa-check',
+                message: 'Uspješno izmijenjena postavka!'
+            }, {
+                    template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                    '<span data-notify="icon"></span>' + '  ' +
+                    '<span data-notify="message">{2}</span>' +
+                    '</div>'
+                });
+            GetSettings();
+        }
+    }
+</script>
+

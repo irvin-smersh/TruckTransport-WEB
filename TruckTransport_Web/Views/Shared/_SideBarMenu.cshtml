@@ -1,0 +1,63 @@
+﻿<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel">
+            <div class="text-center image">
+                <img src="~/Content/images/delivery-truck_64.png" class="img-clear" alt="User Image">
+            </div>                  
+        </div>
+           
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header text-center">@SiteResources.TTConfiguration</li>
+            <!-- Optionally, you can add icons to the links -->
+
+            <li class="treeview @Html.IsMenuOpen("EditProfile", "DispatcherProfile") @Html.IsMenuOpen("Index", "Settings") @Html.IsMenuOpen("Index", "AuditLogging") @Html.IsMenuOpen("Index", "LocationCategories") @Html.IsMenuOpen("Index", "OrderConditions")">
+                <a href="javascript: void(0);">
+                    <i class="fa fa-cogs"></i> <span>@SiteResources.SystemSettings</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu" style="@Html.ShowItems("EditProfile", "DispatcherProfile") @Html.ShowItems("Index", "Settings") @Html.ShowItems("Index", "AuditLogging") @Html.ShowItems("Index", "LocationCategories") @Html.ShowItems("Index", "OrderConditions")">
+                    <li class="@Html.IsActive("EditProfile", "DispatcherProfile")"><a href="@Url.Action("EditProfile", "DispatcherProfile")"><i class="fa fa-user"></i> <span>@SiteResources.MyProfile</span></a></li>
+                    <li class="@Html.IsActive("Index", "Settings")"><a href="@Url.Action("Index", "Settings")"><i class="fa fa-gear"></i> <span>@SiteResources.Settings</span></a></li>
+                    <li class="@Html.IsActive("Index", "AuditLogging")"><a href="@Url.Action("Index", "AuditLogging")"><i class="fa fa-tags"></i> <span>@SiteResources.AuditLoggings</span></a></li>
+                    <li class="@Html.IsActive("Index", "LocationCategories")"><a href="@Url.Action("Index", "LocationCategories")"><i class="fa fa-map-signs"></i> <span>@SiteResources.LocationCategories</span></a></li>
+                    <li class="@Html.IsActive("Index", "OrderConditions")"><a href="@Url.Action("Index", "OrderConditions")"><i class="fa fa-info"></i> <span>@SiteResources.OrderConditions</span></a></li>
+                </ul>
+            </li>
+
+            <li id="chat-menu-item" class="@Html.IsActive("Index", "ChatMessages")">
+                <a href="@Url.Action("Index", "ChatMessages")">
+                    <i class="fa fa-comments"></i>
+                    <span>@SiteResources.Messages</span>
+                    <span class="pull-right-container">
+                        <small id="chat-notif" class="label pull-right bg-red" style="display:none">!</small>
+                    </span>
+                </a>
+            </li>
+
+            <li class="treeview @Html.IsMenuOpen("Index", "KnownLocations") @Html.IsMenuOpen("Index", "DriverStops")">
+                <a href="javascript: void(0);">
+                    <i class="fa fa-globe"></i> <span>@SiteResources.LocationSettings</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu" style="@Html.ShowItems("Index", "KnownLocations") @Html.ShowItems("Index", "DriverStops")">
+                    <li class="@Html.IsActive("Index", "KnownLocations")"><a href="@Url.Action("Index", "KnownLocations")"><i class="fa fa-location-arrow"></i> <span>@SiteResources.KnownLocations</span></a></li>
+                    <li class="@Html.IsActive("Index", "DriverStops")"><a href="@Url.Action("Index", "DriverStops")"><i class="fa fa-map-marker"></i> <span>@SiteResources.DriverStops</span></a></li>
+                </ul>
+            </li>
+            <li class="@Html.IsActive("Index", "Drivers")"><a href="@Url.Action("Index", "Drivers")"><i class="fa fa-drivers-license"></i> <span>@SiteResources.Drivers</span></a></li>
+            <li class="@Html.IsActive("Index", "Vehicles")"><a href="@Url.Action("Index", "Vehicles")"><i class="fa fa-car"></i> <span>@SiteResources.Vehicles</span></a></li>
+            <li class="@Html.IsActive("Index", "Tasks")"><a href="@Url.Action("Index", "Tasks")"><i class="fa fa-tasks"></i> <span>@SiteResources.Tasks</span></a></li>
+            <li class="@Html.IsActive("Index", "Orders")"><a href="@Url.Action("Index", "Orders")"><i class="fa fa-first-order"></i> <span>@SiteResources.Orders</span></a></li>
+        </ul>
+        <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+</aside>

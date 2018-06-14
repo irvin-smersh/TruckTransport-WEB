@@ -1,0 +1,184 @@
+﻿@model GetOrderConditionsVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.OrderConditions;
+}
+
+<div id="order-conditions-result" class="box-border">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.OrderConditions</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Add", "OrderConditions")" class="modal-link btn btn-danger btn-lg"><i class="fa fa-plus"></i> @SiteResources.Add</a>
+                    </div>
+                </div>
+                <br />
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="order-conditions-data-table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>@SiteResources.Description</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orderCondition in Model.OrderConditionsList) {
+                                <tr>
+                                    <td class="col-md-9">
+                                        @orderCondition.opis
+                                    </td>
+
+                                    <td class="right col-md-3" width="10%" align="right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger">@SiteResources.Actions</button>
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li><a href="@Url.Action("Edit", "OrderConditions", new { orderConditionID = orderCondition.stanje_id })" class="modal-link"><i class="fa fa-edit"></i>@SiteResources.Edit</a></li>
+                                                @if (orderCondition.nalozi.Count == 0)
+                                                {
+
+                                                    <li>
+                                                        <a href="javascript: Delete('@orderCondition.stanje_id');" data-toggle="confirmation" data-placement="left" data-popout="true"
+                                                           data-original-title="@SiteResources.Confirmation"
+                                                           data-btn-ok-label="@SiteResources.Yes" data-btn-ok-class="btn-danger" data-btn-ok-icon="fa fa-check"
+                                                           data-btn-cancel-label="@SiteResources.No" data-btn-cancel-class="btn-default" data-btn-cancel-icon="fa fa-remove">
+                                                            <i class="fa fa-trash-o"></i> @SiteResources.Delete
+                                                        </a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@SiteResources.Description</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(
+            function () {
+                $("#order-conditions-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            }
+        );
+
+        function Delete(orderConditionID) {
+            $.ajax({
+                url: '@Url.Action("Delete", "OrderConditions")',
+                type: 'GET',
+                data: { orderConditionID: orderConditionID },
+                error: function () {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                },
+            }).done(function (data) {
+                if (data.success == true) {
+                    $.notify({
+                        icon: 'fa fa-check',
+                        message: 'Uspješno uklonjeno stanje naloga!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-3 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                    GetOrderConditions();
+                } else {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                }
+            });
+        }
+
+        function GetOrderConditions() {
+            $.ajax({
+                url: '@Url.Action("Index", "OrderConditions")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#order-conditions-result').html(data);
+                $("#order-conditions-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            });
+            return false;
+        }
+    </script>
+}
+
+

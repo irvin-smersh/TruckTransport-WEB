@@ -1,0 +1,42 @@
+﻿@{ 
+    ViewBag.SectionTitle = "Greška 500";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@SiteResources.TruckTransport | @ViewBag.SectionTitle</title>
+
+    <link rel="shortcut icon" href="~/Content/images/transport_32.png" type="image/x-icon">
+
+    @Styles.Render("~/bundles/core/css")
+  
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="background-error">
+    <div class="error-page text-center bg-white mg-top200 pd25 border-color-red">
+        <h1 class="text-red">TruckTransport - Greška</h1>
+        <h2 class="headline text-red"> 500</h2>
+        <div class="error-content pd-top20 pd-bot20">
+            <h3><i class="fa fa-warning text-red"></i> Uups! Došlo je do greške.</h3>
+            <p>
+                Došlo je do greške na serveru. Izvinjavamo se za moguće neprijatnosti.
+                Možete se vratiti na <a class="color-red" href="@Url.Action("Index","Home")">početnu stranicu</a>.
+            </p>
+        </div>
+        <!-- /.error-content -->
+    </div>
+    <!-- /.error-page -->
+    @Scripts.Render("~/bundles/core/js")
+</body>
+</html>
+
+
+
+

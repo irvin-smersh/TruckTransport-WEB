@@ -1,0 +1,147 @@
+﻿@model IndexVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.IndexPage;
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            @Html.Partial("_Statistics", Model.Statistics)
+        </div>
+        <div class="col-md-6">
+            <div id="active-drivers-partial">
+                @Html.Partial("_ActiveDrivers", Model.ActiveDrivers)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div id="active-drivers-latest-position">
+                @Html.Partial("_ActiveDriversLatestPosition", Model.ActiveDriversLatestPositions)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $("#active-drivers-data-table").DataTable({
+            "language": {
+                "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                "zeroRecords": "Nema pronađenih zapisa.",
+                "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                "infoFiltered": "",
+                "infoPostFix": "",
+                "search": "Pretraga:",
+                "paginate": {
+                    "sFirst": "Prva",
+                    "sLast": "Posljednja",
+                    "sNext": "Sljedeća",
+                    "sPrevious": "Prethodna"
+                },
+            }
+        });
+
+        $('[data-toggle=confirmation]').confirmation({
+            rootSelector: '[data-toggle=confirmation]',
+        });
+    </script>
+
+    <script>
+        function GetActiveDrivers() {
+            $.ajax({
+                url: '@Url.Action("GetActiveDrivers", "Home")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#active-drivers-partial').html(data);
+                $('#active-drivers-data-table').DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            });
+            return false;
+        }
+
+        setInterval(function(){
+            GetActiveDrivers()
+        }, 10000);
+    </script>
+
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        var locations = @Html.Raw(Json.Encode(Model.ActiveDriversLatestPositions));
+
+        window.onload = function () {
+            initialize();
+        };
+
+        function initialize() {
+            var options = { 'center': new google.maps.LatLng(43.344361, 17.811576), 'zoom': 10, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+            var myLatLng = new google.maps.LatLng(43.344361, 17.811576);
+
+            var map = new google.maps.Map(document.getElementById('map-result'), options);
+
+            var infoWindow = new google.maps.InfoWindow({});
+
+            var marker, i;
+
+            if (locations != null && locations != undefined) {
+                for (i = 0; i < locations.length; i++) {
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(locations[i].Latitude, locations[i].Longitude),
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        icon: "../Content/images/marker.png"
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            infoWindow.setContent(locations[i].Name);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+        }
+
+        function GetAllActiveDriversLatestPosition() {
+            $.ajax({
+                url: '@Url.Action("GetAllActiveDriversLatestPosition", "Home")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#active-drivers-latest-position').html(data);
+                initialize();
+            });
+            return false;
+        }
+
+        setInterval(function(){
+            GetAllActiveDriversLatestPosition()
+        }, 10000);
+    </script>
+}

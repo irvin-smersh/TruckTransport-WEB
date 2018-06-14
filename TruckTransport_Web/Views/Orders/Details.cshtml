@@ -1,0 +1,164 @@
+﻿@model GetOrderDetailsVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.OrderDetails;
+}
+
+<div id="order-details" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.OrderDetails</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Edit", "Orders", new { orderID = Model.OrderID })" class="btn bg-red btn-lg"><i class="fa fa-edit"> @SiteResources.Edit</i></a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-body">
+                                    <h4 class="text-center">@SiteResources.BasicInfo</h4>
+                                    <br />
+                                    <p><strong>@SiteResources.CreationTime:</strong> @Model.OrderCreationTime</p>
+                                    <p><strong>@SiteResources.OrderCondition:</strong> @Model.OrderCondition</p>
+                                    <p><strong>@SiteResources.Driver:</strong> @Model.Driver</p>
+                                    <p><strong>@SiteResources.Vehicle:</strong> @Model.Vehicle</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-body">
+                                    <h4 class="text-center">@SiteResources.Tasks</h4>
+                                    <br />
+                                    @if (Model.Tasks != null)
+                                    {
+                                        foreach (var task in Model.Tasks)
+                                        {
+                                            <p><strong>@SiteResources.NumberInOrder:</strong> @task.TaskNumber</p>
+                                            <p><strong>@SiteResources.Name:</strong> @task.Name</p>
+                                            <p><strong>@SiteResources.Location:</strong> @task.KnownLocation</p>
+                                            <p><strong>@SiteResources.Description:</strong> @task.Description</p>
+                                            <p><strong>@SiteResources.CheckIn:</strong> @task.CheckIn</p>
+                                            <p><strong>@SiteResources.CheckOut:</strong> @task.CheckOut</p>
+
+                                            <hr />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-body">
+                                    <h4 class="text-center">@SiteResources.DriverStops</h4>
+                                    <br />
+                                    @if (Model.DriverStops != null)
+                                    {
+                                        foreach (var driverStop in Model.DriverStops)
+                                        {
+                                            <p><strong>@SiteResources.Name:</strong> @driverStop.DriverStop</p>
+                                            <p><strong>@SiteResources.NumberInOrder:</strong> @driverStop.DriverStopNumber</p>
+                                            <p><strong>@SiteResources.CheckIn:</strong> @driverStop.CheckIn</p>
+                                            <p><strong>@SiteResources.CheckOut:</strong> @driverStop.CheckOut</p>
+
+                                            <hr />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.Map</h3>
+                </div>
+                <div class="box-body">
+                    <div id="map-result" style="width: 100%; height: 584px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        var taskLocations = @Html.Raw(Json.Encode(Model.Tasks));
+        var driverStopLocations = @Html.Raw(Json.Encode(Model.DriverStops));
+
+        window.onload = function () {
+            initialize();
+        };
+
+        function initialize() {
+            var options = { 'center': new google.maps.LatLng(43.344361, 17.811576), 'zoom': 10, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+            var myLatLng = new google.maps.LatLng(43.344361, 17.811576);
+
+            var map = new google.maps.Map(document.getElementById('map-result'), options);
+
+            var infoWindow = new google.maps.InfoWindow({});
+
+            var marker, i;
+
+            if (taskLocations != null && taskLocations != undefined) {
+                for (i = 0; i < taskLocations.length; i++) {
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(taskLocations[i].Latitude, taskLocations[i].Longitude),
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        icon: "../Content/images/marker.png"
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            toggleBounce;
+                            infoWindow.setContent(taskLocations[i].Name);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+
+            if (driverStopLocations != null && driverStopLocations != undefined) {
+                for (i = 0; i < driverStopLocations.length; i++) {
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(driverStopLocations[i].Latitude, driverStopLocations[i].Longitude),
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        icon: "../Content/images/marker.png"
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            toggleBounce;
+                            infoWindow.setContent(driverStopLocations[i].DriverStop);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+        }
+    </script>
+}
+
+
+
+

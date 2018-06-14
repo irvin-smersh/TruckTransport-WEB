@@ -1,0 +1,158 @@
+﻿@model GetDriversVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.Drivers;
+}
+
+<div id="drivers-result" class="box-border">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.Drivers</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Add", "Drivers")" class="modal-link btn btn-danger btn-lg"><i class="fa fa-plus"></i> @SiteResources.Add</a>
+                    </div>
+                </div>
+                <br />
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="drivers-data-table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>@SiteResources.FirstName</th>
+                                <th>@SiteResources.LastName</th>
+                                <th>@SiteResources.PersonUniqueID</th>
+                                <th>@SiteResources.Username</th>   
+                                <th>@SiteResources.Status</th>                          
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var driver in Model.DriversList)
+                            {
+                                <tr>
+                                    <td class="col-md-2">
+                                        @driver.FirstName
+                                    </td>
+                                    <td class="col-md-2">
+                                        @driver.LastName
+                                    </td>
+                                    <td class="col-md-2">
+                                        @driver.PersonUniqueID
+                                    </td>
+                                    <td class="col-md-2">
+                                        @driver.Username
+                                    </td>
+                                    <td class="col-md-2">
+                                        @driver.Status
+                                    </td>
+                                    <td class="right" width="10%" align="right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger">@SiteResources.Actions</button>
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li><a href="@Url.Action("Details", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-file-text-o"></i>@SiteResources.Details</a></li>
+                                                @if (driver.Status == "Aktivan")
+                                                {
+                                                    <li><a href="@Url.Action("GetLatestPosition", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-map"></i>@SiteResources.MapPosition</a></li>
+                                                }
+                                                <li><a href="@Url.Action("Edit", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-edit"></i>@SiteResources.Edit</a></li>
+                                                <li><a href="@Url.Action("ChangePassword", "Drivers", new { driverID = driver.DriverID })" class="modal-link"><i class="fa fa-lock"></i>@SiteResources.ChangePassword</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@SiteResources.FirstName</th>
+                                <th>@SiteResources.LastName</th>
+                                <th>@SiteResources.PersonUniqueID</th>
+                                <th>@SiteResources.Username</th>
+                                <th>@SiteResources.Status</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(
+            function () {
+                $("#drivers-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            }
+        );
+        
+        function GetDrivers() {
+            $.ajax({
+                url: '@Url.Action("Index", "Drivers")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#drivers-result').html(data);
+                $("#drivers-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            });
+            return false;
+        }
+    </script>
+}
+
+
+
+

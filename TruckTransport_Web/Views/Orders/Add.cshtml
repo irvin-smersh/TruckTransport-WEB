@@ -1,0 +1,379 @@
+﻿@model AddOrderVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.AddOrder;
+}
+
+<div id="add-order" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.AddOrder</h3>
+                </div>
+                <br />
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.BasicInfo</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @using (Html.BeginForm("Add", "Orders", FormMethod.Post, new { id = "add-order-form", autocomplete = "off" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.HiddenFor(x => x.OrderConditionID)
+
+                                                if (!ViewData.ModelState.IsValid)
+                                                {
+                                                    <div class="alert alert-danger alert-dismissible animated fadeIn">
+                                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                        <div>
+                                                            @Html.ValidationSummary(excludePropertyErrors: false)
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Driver)
+                                                    @Html.DropDownListFor(x => x.DriverID, Model.Drivers, new { @class = "form-control" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Vehicle)
+                                                    @Html.DropDownListFor(x => x.VehicleID, Model.Vehicles, new { @class = "form-control" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.Tasks)
+                                                    @Html.DropDownListFor(x => x.TaskIDs, Model.Tasks, new { @class = "form-control", @multiple = "multiple" })
+                                                </div>
+
+                                                <div class="form-group">
+                                                    @Html.Label(SiteResources.DriverStops)
+                                                    @Html.DropDownListFor(x => x.DriverStopIDs, Model.DriverStops, new { @class = "form-control", @multiple = "multiple" })
+                                                </div>
+
+                                                <div id="task-driver-stop-numbers">
+                                                    
+                                                </div>
+
+                                                <br />
+
+                                                <div class="text-center">
+                                                    <button id="btnSetNumbers" type="button" class="btn bg-red btn-flat">@SiteResources.SetNumbers</button>
+                                                    <button id="btnSubmit" type="submit" class="btn bg-red btn-flat">@SiteResources.Save</button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title"><strong>@SiteResources.MapLocation</strong></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="map-result" style="width: 100%; height: 584px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        var tasks = @Html.Raw(Json.Encode(Model.TaskIDs));
+        var driverStops = @Html.Raw(Json.Encode(Model.DriverStopIDs));
+      
+        var taskLocations = [];
+        var driverStopLocations = [];
+
+        var oldTaskLength, newTaskLength, oldDriverStopLength, newDriverStopLength;
+
+        //init select2
+        $('#TaskIDs').select2({ width: '100%', height: '100%', maximumSelectionSize: 10, placeholder: "Odaberite zadatke:" });
+        $('#DriverStopIDs').select2({ width: '100%', height: '100%', maximumSelectionSize: 10, placeholder: "Odaberite stajališta:" });
+
+        if (tasks != null)
+        {
+            $('#TaskIDs').val(tasks).trigger('change');
+            $('#btnSetNumbers').prop('disabled', false);       
+        }
+        else{
+            //clear select2 values
+            $('#btnSetNumbers').prop('disabled', true);
+            $('#TaskIDs').val('').trigger('change');
+        }
+
+        if (driverStops != null)
+        {
+            $('#DriverStopIDs').val(driverStops).trigger('change');
+        }
+        else{
+            //clear select2 values        
+            $("#DriverStopIDs").val('').trigger('change');
+        }
+
+        window.onload = function () {
+            initialize();
+        };
+
+        function initialize() {
+
+            var options = { 'center': new google.maps.LatLng(43.344361, 17.811576), 'zoom': 10, 'mapTypeId': google.maps.MapTypeId.ROADMAP }
+            var myLatLng = new google.maps.LatLng(43.344361, 17.811576);
+
+            var map = new google.maps.Map(document.getElementById('map-result'), options);
+
+            var infoWindow = new google.maps.InfoWindow({});
+
+            var marker, i;
+
+            if(taskLocations != null && taskLocations != undefined){
+                for(i = 0; i < taskLocations.length; i++){
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(taskLocations[i].Latitude, taskLocations[i].Longitude),
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        icon: "../Content/images/marker.png"
+                    });
+
+                    //check if new order task is added or removed
+                    if(newTaskLength > oldTaskLength){
+                        map.setZoom(15);
+                        map.setCenter(marker.getPosition());
+                    }
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            toggleBounce;
+                            infoWindow.setContent(taskLocations[i].Info);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+
+            if(driverStopLocations != null && driverStopLocations != undefined){
+                for(i = 0; i < driverStopLocations.length; i++){
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(driverStopLocations[i].Latitude, driverStopLocations[i].Longitude),
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        icon: "../Content/images/marker.png"
+                    });
+
+                    //check if new order driver stop is added or removed
+                    if(newDriverStopLength > oldDriverStopLength){
+                        map.setZoom(15);
+                        map.setCenter(marker.getPosition());
+                    }
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                        return function () {
+                            toggleBounce;
+                            infoWindow.setContent(driverStopLocations[i].Info);
+                            infoWindow.open(map, marker);
+                        }
+                    })(marker, i));
+                }
+            }
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+        }
+
+        $('#TaskIDs').on('change', function () {
+            jQuery.ajaxSettings.traditional = true;
+
+            var selectedTasks = $('#TaskIDs').val();
+
+            $.notify({
+                icon: 'fa fa-spinner',
+                message: 'Učitavanje...'
+            }, {
+                template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                '<span data-notify="icon"></span>' + '  ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+
+            if(selectedTasks != null){
+                $('#btnSetNumbers').prop('disabled', false);
+
+                if(taskLocations != null){
+                    oldTaskLength = taskLocations.length;
+                }
+                else{
+                    oldTaskLength = 0;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("GetTaskLocationsCoordinatesByIDs", "Tasks")',
+                    type: "GET",
+                    contentType: "application/json",
+                    dataType: "JSON",
+                    data: {
+                        taskIDs: selectedTasks
+                    },
+                    cache: false,
+                    success: function (data) {
+                        if (data.success) {
+                            taskLocations = data.taskLocations;
+                            newTaskLength = taskLocations.length;
+                            initialize();
+                        }
+                    },
+                    error: function(){
+                        $.notify({
+                            icon: 'fa fa-remove',
+                            message: 'Došlo je do greške...'
+                        }, {
+                            template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                            '<span data-notify="icon"></span>' + '  ' +
+                            '<span data-notify="message">{2}</span>' +
+                            '</div>'
+                        });
+                    }
+                });
+            }
+            else{
+                taskLocations = null;
+                newTaskLength = 0;
+                $('#btnSetNumbers').prop('disabled', true);
+                $('#task-driver-stop-numbers').hide();
+                initialize();
+            }
+        });
+
+        $('#DriverStopIDs').on('change', function () {
+            jQuery.ajaxSettings.traditional = true;
+
+            var selectedDriverStops = $('#DriverStopIDs').val();
+
+            $.notify({
+                icon: 'fa fa-spinner',
+                message: 'Učitavanje...'
+            }, {
+                template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                '<span data-notify="icon"></span>' + '  ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+
+            if(selectedDriverStops != null){
+                if(driverStopLocations != null){
+                    oldDriverStopLength = driverStopLocations.length;
+                }
+                else{
+                    oldDriverStopLength = 0;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("GetDriverStopLocationsCoordinatesByIDs", "DriverStops")',
+                    type: "GET",
+                    contentType: "application/json",
+                    dataType: "JSON",
+                    data: {
+                        driverStopIDs: selectedDriverStops
+                    },
+                    cache: false,
+                    success: function (data) {
+                        if (data.success) {
+                            driverStopLocations = data.driverStopLocations;
+                            newDriverStopLength = driverStopLocations.length;
+                            initialize();
+                        }
+                    },
+                    error: function(){
+                        $.notify({
+                            icon: 'fa fa-remove',
+                            message: 'Došlo je do greške...'
+                        }, {
+                            template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                            '<span data-notify="icon"></span>' + '  ' +
+                            '<span data-notify="message">{2}</span>' +
+                            '</div>'
+                        });
+                    }
+                });
+            }
+            else{
+                driverStopLocations = null;
+                newDriverStopLength = 0;
+                initialize();
+            }
+        });
+
+        $('#add-order-form').submit(function (e) {
+            $('#btnSubmit').prop('disabled', true);
+        });
+
+        $('#btnSetNumbers').click(function(){       
+            $('#btnSetNumbers').prop('disabled', true);
+
+            var selectedTasks = $('#TaskIDs').val();
+            var selectedDriverStops = $('#DriverStopIDs').val();
+
+            $.notify({
+                icon: 'fa fa-spinner',
+                message: 'Učitavanje...'
+            }, {
+                template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                '<span data-notify="icon"></span>' + '  ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+
+            $.ajax({
+                url: '@Url.Action("AddSetTaskAndDriverStopNumbers", "Orders")',
+                type: "GET",
+                contentType: "application/json",               
+                data: {
+                    taskIDs: selectedTasks,
+                    driverStopIDs: selectedDriverStops
+                },
+                cache: false,
+                success: function (data) {
+                    $('#task-driver-stop-numbers').show();
+                    $('#task-driver-stop-numbers').html(data);
+                    $('#btnSetNumbers').prop('disabled', false);
+                },
+                error: function(){
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške...'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+
+                    $('#btnSetNumbers').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+}

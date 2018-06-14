@@ -1,0 +1,152 @@
+﻿@model SetSOSVM
+
+<div id="modal-block" class="">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h4 class="modal-title"><i class="fa fa-warning"></i> @SiteResources.SOS</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group">
+            <label>@SiteResources.Driver:</label>
+            <p>@Model.DriverFullName</p>
+        </div>
+
+        <div class="form-group">
+            <label>@SiteResources.MessageTime:</label>
+            <p>@Model.SOSMessageTime</p>
+        </div>
+
+        <div class="form-group">
+            <label>@SiteResources.Text:</label>
+            <p>@Model.SOSMessageText</p>
+        </div>
+
+        <hr />
+
+        <div class="form-group">
+            @Html.TextBoxFor(x => x.ReplyText, new { @class = "form-control", @placeholder = SiteResources.EnterReply })
+        </div>
+
+        <hr />
+
+        <div id="map-sos-result" style="width: 100%; height: 300px;">
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button id="btnSubmit" type="button" class="btn bg-red btn-flat text-center">@SiteResources.SendReply</button>
+    </div>
+</div>
+
+
+<script>
+    if ($('script[src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"]').length === 0) {
+        var script = document.createElement('script');
+        script.type = "text/javascript";
+        script.defer = true;
+        script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8";
+        document.body.appendChild(script);
+    }
+
+    var driverID = '@Model.DriverID';
+    var latitude = '@Model.Latitude';
+    var longitude = '@Model.Longitude'
+
+    $('#modal-container').on('shown.bs.modal', function () {
+        initializeSOSPosition();
+    });
+
+    function initializeSOSPosition() {
+        var x = latitude.trimLeft();
+        var y = longitude;
+
+        x = x.replace(",", ".");
+        y = y.replace(",", ".");
+
+        var mapOptions = {
+            center: new google.maps.LatLng(x, y),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById("map-sos-result"),
+          mapOptions);
+
+        // create a marker
+        var latlng = new google.maps.LatLng(x, y);
+
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            icon: "../Content/images/marker.png",
+        });
+
+        function toggleBounce() {
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+            } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }
+        }
+
+        google.maps.event.addListener(marker, 'click', function () {
+            map.setZoom(20);
+            map.setCenter(marker.getPosition());
+        });
+
+        google.maps.event.addListener(map, 'center_changed', function () {
+            // 3 seconds after the center of the map has changed, pan back to the
+            // marker.
+            window.setTimeout(function () {
+                map.panTo(marker.getPosition());
+            }, 3000);
+        });
+    }
+
+    $('#btnSubmit').click(function () {
+        if ($('#ReplyText').val().trim().length !== 0) {
+            var replyMessageText = $('#ReplyText').val();
+            $('#ReplyText').val('');
+
+            $.ajax({
+                url: '@Url.Action("SendMessage", "ChatMessages")',
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    driverID: driverID,
+                    messageText: replyMessageText
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $.notify({
+                            icon: 'fa fa-check',
+                            message: 'Poruka uspješno poslana!'
+                        }, {
+                            template: '<div data-notify="container" class="col-md-3 alert btn {0} text-center" role="alert">' +
+                            '<span data-notify="icon"></span>' + '  ' +
+                            '<span data-notify="message">{2}</span>' +
+                            '</div>'
+                        });
+                        $('#modal-container').modal('hide');
+                    }
+                    else {
+                        console.log("message-fail");
+                    }
+                },
+                error: function () {
+                    $.notify({
+                        icon: 'fa fa-spinner',
+                        message: 'Došlo je do greške...'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                }
+            });
+        }
+    });
+</script>

@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Actions" xml:space="preserve">
+    <value>Akcije</value>
+  </data>
+  <data name="ActiveDrivers" xml:space="preserve">
+    <value>Aktivni vozači</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="AddDriverStop" xml:space="preserve">
+    <value>Dodavanje stajališta</value>
+  </data>
+  <data name="AddKnownLocation" xml:space="preserve">
+    <value>Dodavanje poznate lokacije</value>
+  </data>
+  <data name="AddNewKnownLocation" xml:space="preserve">
+    <value>Dodaj lokaciju</value>
+  </data>
+  <data name="AddOrder" xml:space="preserve">
+    <value>Dodavanje naloga</value>
+  </data>
+  <data name="AddTask" xml:space="preserve">
+    <value>Dodavanje zadatka</value>
+  </data>
+  <data name="AllRightsReserved" xml:space="preserve">
+    <value>Sva prava pridržana</value>
+  </data>
+  <data name="Assigned" xml:space="preserve">
+    <value>Dodijeljen</value>
+  </data>
+  <data name="AuditLoggings" xml:space="preserve">
+    <value>Logirani događaji</value>
+  </data>
+  <data name="BasicInfo" xml:space="preserve">
+    <value>Osnovne informacije</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategorija</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Promijeni lozinku</value>
+  </data>
+  <data name="CheckIn" xml:space="preserve">
+    <value>Prijava</value>
+  </data>
+  <data name="CheckOut" xml:space="preserve">
+    <value>Odjava</value>
+  </data>
+  <data name="ChooseKnownLocation" xml:space="preserve">
+    <value>Odaberite lokaciju</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zatvori</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Potvrda</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Potvrda lozinke</value>
+  </data>
+  <data name="Copyrights" xml:space="preserve">
+    <value>© TruckTransport 2018</value>
+  </data>
+  <data name="CreationTime" xml:space="preserve">
+    <value>Vrijeme kreiranja</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Trenutna lozinka</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Ukloni</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalji</value>
+  </data>
+  <data name="Dispatcher" xml:space="preserve">
+    <value>Dispečer</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>Vozač</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>Vozači</value>
+  </data>
+  <data name="DriverStopDetails" xml:space="preserve">
+    <value>Detalji stajališta</value>
+  </data>
+  <data name="DriverStopNumber" xml:space="preserve">
+    <value>Redni broj stajališta</value>
+  </data>
+  <data name="DriverStops" xml:space="preserve">
+    <value>Stajališta</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Uredi</value>
+  </data>
+  <data name="EditDriverStop" xml:space="preserve">
+    <value>Uređivanje stajališta</value>
+  </data>
+  <data name="EditKnownLocation" xml:space="preserve">
+    <value>Uređivanje poznate lokacije</value>
+  </data>
+  <data name="EditOrder" xml:space="preserve">
+    <value>Uređivanje naloga</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>Uređivanje profila</value>
+  </data>
+  <data name="EditTask" xml:space="preserve">
+    <value>Uređivanje zadatka</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EnterMessage" xml:space="preserve">
+    <value>Unesite poruku...</value>
+  </data>
+  <data name="EnterReply" xml:space="preserve">
+    <value>Unesite odgovor...</value>
+  </data>
+  <data name="EventTime" xml:space="preserve">
+    <value>Vrijeme događaja</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="FIT" xml:space="preserve">
+    <value>Fakultet informacijskih tehnologija</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Početna</value>
+  </data>
+  <data name="IndexPage" xml:space="preserve">
+    <value>Početna</value>
+  </data>
+  <data name="IPAddress" xml:space="preserve">
+    <value>IP adresa</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Ključ</value>
+  </data>
+  <data name="KnownLocationDetails" xml:space="preserve">
+    <value>Detalji poznate lokacije</value>
+  </data>
+  <data name="KnownLocations" xml:space="preserve">
+    <value>Poznate lokacije</value>
+  </data>
+  <data name="LastLoginTime" xml:space="preserve">
+    <value>Posljednja prijava na sistem</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Prezime</value>
+  </data>
+  <data name="Lat" xml:space="preserve">
+    <value>Geografska širina</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Geo. širina</value>
+  </data>
+  <data name="LoadCapacity" xml:space="preserve">
+    <value>Nosivost</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Lokacija</value>
+  </data>
+  <data name="LocationCategories" xml:space="preserve">
+    <value>Kategorije lokacije</value>
+  </data>
+  <data name="LocationSettings" xml:space="preserve">
+    <value>Postavke lokacija</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Prijava</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Odjava</value>
+  </data>
+  <data name="Long" xml:space="preserve">
+    <value>Geografska dužina</value>
+  </data>
+  <data name="Longitude" xml:space="preserve">
+    <value>Geo. dužina</value>
+  </data>
+  <data name="Manufacturer" xml:space="preserve">
+    <value>Marka</value>
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value>Mapa</value>
+  </data>
+  <data name="MapLocation" xml:space="preserve">
+    <value>Lokacija na mapi</value>
+  </data>
+  <data name="MapPosition" xml:space="preserve">
+    <value>Pozicija na mapi</value>
+  </data>
+  <data name="MemberSince" xml:space="preserve">
+    <value>Član od januara 2018.</value>
+  </data>
+  <data name="Messages" xml:space="preserve">
+    <value>Poruke</value>
+  </data>
+  <data name="MessageTime" xml:space="preserve">
+    <value>Vrijeme poruke</value>
+  </data>
+  <data name="MoreInfo" xml:space="preserve">
+    <value>Više informacija...</value>
+  </data>
+  <data name="MostUsedVehicle" xml:space="preserve">
+    <value>Najčešće korišteno vozilo</value>
+  </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>Moj profil</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Naziv</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>Nova lozinka</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value>Broj</value>
+  </data>
+  <data name="NumberInOrder" xml:space="preserve">
+    <value>Redni broj u nalogu</value>
+  </data>
+  <data name="NumberOfDrivers" xml:space="preserve">
+    <value>Broj vozača</value>
+  </data>
+  <data name="NumberOfFinishedOrders" xml:space="preserve">
+    <value>Broj završenih naloga</value>
+  </data>
+  <data name="NumberOfFinishedTasks" xml:space="preserve">
+    <value>Broj završenih zadataka</value>
+  </data>
+  <data name="NumberOfGivenOrders" xml:space="preserve">
+    <value>Broj dodijeljenih naloga</value>
+  </data>
+  <data name="NumberOfGivenTasks" xml:space="preserve">
+    <value>Broj dodijeljenih zadataka</value>
+  </data>
+  <data name="NumberOfVehicles" xml:space="preserve">
+    <value>Broj vozila</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Nalog</value>
+  </data>
+  <data name="OrderCondition" xml:space="preserve">
+    <value>Stanje</value>
+  </data>
+  <data name="OrderConditions" xml:space="preserve">
+    <value>Stanja naloga</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>Detalji naloga</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Nalozi</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Lozinka</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Korisnički podaci</value>
+  </data>
+  <data name="PersonUniqueID" xml:space="preserve">
+    <value>JMBG</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Zapamti me</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Spremi</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Pošalji</value>
+  </data>
+  <data name="SendReply" xml:space="preserve">
+    <value>Pošaljite odgovor</value>
+  </data>
+  <data name="SetNumbers" xml:space="preserve">
+    <value>Dodijeli redne brojeve</value>
+  </data>
+  <data name="SetTaskNumberAndDriverStopTitle" xml:space="preserve">
+    <value>Unos rednih brojeva zadataka i stajališta u nalogu</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Postavke</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Prijavi se</value>
+  </data>
+  <data name="SOS" xml:space="preserve">
+    <value>SOS</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>Statistika</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Potvrdi</value>
+  </data>
+  <data name="SystemSettings" xml:space="preserve">
+    <value>Postavke sistema</value>
+  </data>
+  <data name="T" xml:space="preserve">
+    <value>T</value>
+  </data>
+  <data name="TaskDetails" xml:space="preserve">
+    <value>Detalji zadatka</value>
+  </data>
+  <data name="TaskNotAssigned" xml:space="preserve">
+    <value>Zadatak nije dodijeljen!</value>
+  </data>
+  <data name="TaskNumber" xml:space="preserve">
+    <value>Redni broj zadatka</value>
+  </data>
+  <data name="TaskNumberWarning" xml:space="preserve">
+    <value>Redni broj zadatka unosite po redoslijedu izvršavanja zadataka u jednom nalogu. Tokom unosa rednog broja potrebno je uzeti u obzir i naknadni odabir stajališta te unos njihovih rednih brojeva.
+Primjer ispravnog unosa: nalog ima 3 zadatka sa rednim brojevima 1,2,4 i 1 stajalište sa rednim brojem 3.
+</value>
+  </data>
+  <data name="Tasks" xml:space="preserve">
+    <value>Zadaci</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Tekst</value>
+  </data>
+  <data name="Transport" xml:space="preserve">
+    <value>Transport</value>
+  </data>
+  <data name="Truck" xml:space="preserve">
+    <value>Truck</value>
+  </data>
+  <data name="TruckTransport" xml:space="preserve">
+    <value>TruckTransport</value>
+  </data>
+  <data name="TTConfiguration" xml:space="preserve">
+    <value>TT CONFIGURATION</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tip</value>
+  </data>
+  <data name="Unassigned" xml:space="preserve">
+    <value>Nedodijeljen</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Korisničko ime</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Vrijednost</value>
+  </data>
+  <data name="Vehicle" xml:space="preserve">
+    <value>Vozilo</value>
+  </data>
+  <data name="Vehicles" xml:space="preserve">
+    <value>Vozila</value>
+  </data>
+  <data name="WebPage" xml:space="preserve">
+    <value>Web stranica</value>
+  </data>
+  <data name="YearMade" xml:space="preserve">
+    <value>Godište</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
+  </data>
+</root>

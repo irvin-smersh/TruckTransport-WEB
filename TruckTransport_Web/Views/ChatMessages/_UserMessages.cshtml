@@ -1,0 +1,45 @@
+﻿@model ChatUserMessagesVM
+
+<div class="direct-chat-messages">
+    @if (Model.UserMessages != null && Model.UserMessages.Count != 0)
+    {
+        foreach (var userMessage in Model.UserMessages)
+        {
+            if (userMessage.FromDriver)
+            {
+        <!-- Message. Default to the left -->
+                <div class="direct-chat-msg">
+                    <div class="direct-chat-info clearfix">
+                        <span class="direct-chat-name pull-left">@Model.DriverFullName</span>
+                        <span class="direct-chat-timestamp pull-right">@userMessage.CreationTime</span>
+                    </div>
+                    <!-- /.direct-chat-info -->
+                    <img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                        @userMessage.MessageText
+                    </div>
+                    <!-- /.direct-chat-text -->
+                </div>
+        <!-- /.direct-chat-msg -->
+            }
+            else
+            {
+         <!-- Message to the right -->
+                <div class="direct-chat-msg right">
+                    <div class="direct-chat-info clearfix">
+                        <span class="direct-chat-name pull-right">@SiteResources.Dispatcher</span>
+                        <span class="direct-chat-timestamp pull-left">@userMessage.CreationTime</span>
+                    </div>
+                    <!-- /.direct-chat-info -->
+                    <img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">
+                    <!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                        @userMessage.MessageText
+                    </div>
+                    <!-- /.direct-chat-text -->
+                </div>
+            }
+        }
+    }
+</div>

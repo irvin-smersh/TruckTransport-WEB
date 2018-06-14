@@ -1,0 +1,96 @@
+﻿@model EditProfileVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.MyProfile;
+}
+
+<div id="edit-dispatcher-user-profile-content">
+    <div class="col-md-12">
+        <h2 class="text-center"><i class="fa fa-edit"></i> @SiteResources.EditProfile</h2>
+        <br />
+
+        <div id="dispatcher-user-info-content" class="col-md-6">
+            @Html.Partial("_DispatcherUserPersonalInfo", model: Model.DispatcherUser)
+        </div>
+
+        <div id="dispatcher-user-password-content" class="col-md-6">
+            @Html.Partial("_DispatcherUserPassword", model: Model.DispatcherPassword)
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('#edit-dispatcher-user-info-form-submit').click(function () {
+                $(this).prop('disabled', true);
+
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("DispatcherUserInfoEdit", "DispatcherProfile")",
+                    type: "POST",
+                    data: $("#edit-dispatcher-user-info-form").serialize(),
+                }).done(function (data) {
+                    if (data.success) {
+                        $.notify({
+                            icon: 'fa fa-check',
+                            message: 'Uspješna izmjena korisničkih podatka!'
+                        }, {
+                            template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                            '<span data-notify="icon"></span>' + '  ' +
+                            '<span data-notify="message">{2}</span>' +
+                            '</div>'
+                        });
+
+                        $('#edit-dispatcher-user-info-form-submit').prop('disabled', false);
+
+                        $('#dispatcher-user-info-validation').html("");
+                        $('#dispatcher-user-info-validation-area').hide('fast');
+                    }
+                    else {
+                        $('#dispatcher-user-info-content').html('');
+                        $('#dispatcher-user-info-content').html(data);
+                    }
+                });
+            });
+
+            $('#change-dispatcher-user-password-form-submit').click(function () {
+                $(this).prop('disabled', true);
+
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("DispatcherUserChangePassword", "DispatcherProfile")",
+                    type: "POST",
+                    data: $("#change-dispatcher-user-password-form").serialize(),
+                }).done(function (data) {
+                    if (data.success) {
+                        $.notify({
+                            icon: 'fa fa-check',
+                            message: 'Uspješna izmjena lozinke!'
+                        }, {
+                            template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                            '<span data-notify="icon"></span>' + '  ' +
+                            '<span data-notify="message">{2}</span>' +
+                            '</div>'
+                        });
+
+                        $('#change-dispatcher-user-password-form').prop('disabled', false);
+
+                        $('#CurrentPassword').val('');
+                        $('#NewPassword').val('');
+                        $('#NewPasswordConfirm').val('');
+
+                        $('#dispatcher-change-password-validation').html("");
+                        $('#dispatcher-change-password-validation-area').hide('fast');
+                    }
+                    else {
+                        $('#dispatcher-user-password-content').html('');
+                        $('#dispatcher-user-password-content').html(data);
+                    }
+
+                });
+            });
+        });
+    </script>
+}

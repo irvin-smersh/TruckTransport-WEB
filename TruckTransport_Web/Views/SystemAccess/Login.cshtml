@@ -1,0 +1,86 @@
+﻿@model LoginVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.Login;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@SiteResources.TruckTransport | @SiteResources.Login</title>
+
+    <link rel="shortcut icon" href="~/Content/images/transport_32.png" type="image/x-icon">
+
+    @Styles.Render("~/bundles/login/css")   
+</head>
+<body class="skin-red-light" style="background-image:url(../../Content/images/truck_bg.jpg);">
+    <div class="login-box">
+        <div class="page-header" style="background-color:white; padding-top:20px; border:1px solid red;">
+            <div class="login-logo">
+                <a class="text-red" href="@Url.Action("Login", "SystemAccess")"><b>@SiteResources.TruckTransport</b></a>
+                <br />
+                <p class="text-red"><b>@SiteResources.Login</b></p>
+            </div>
+        </div>
+
+        <div class="login-box-body" style="border:1px solid red;"> 
+                      
+            @if (!ViewData.ModelState.IsValid) {
+                <div class="alert alert-danger alert-dismissible animated fadeIn">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <div>
+                        @Html.ValidationSummary(false)
+                    </div>
+                </div>
+            }
+
+            @using (Html.BeginForm("Login", "SystemAccess", FormMethod.Post, new { autocomplete = "off" })) {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group has-feedback">
+                    @Html.TextBoxFor(e => e.Username, htmlAttributes: new { @class = "form-control", @placeholder = SiteResources.Username })
+                    <span class="fa fa-user form-control-feedback"></span>
+                </div>
+
+                <div class="form-group has-feedback">
+                    @Html.PasswordFor(e => e.Password, htmlAttributes: new { @class = "form-control", @placeholder = SiteResources.Password })
+                    <span class="fa fa-lock form-control-feedback"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="form-group">
+                            <div class="checkbox icheck">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.RememberMe, htmlAttributes: new { @type = "checkbox" }) @SiteResources.RememberMe
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-danger btn-block btn-flat">@SiteResources.Login</button>
+                    </div>
+                </div>
+            }            
+            @*<a href="@Url.Action("ForgottenPassword", "SystemAccess")">@SiteResources.ForgottenPassword</a>*@
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/login/js")
+
+    <script>
+        $('input').iCheck({
+            handle: 'checkbox',
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red',
+            increaseArea: '20%'
+        });
+    </script>
+ 
+</body>
+</html>

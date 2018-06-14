@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>@SiteResources.TruckTransport | @ViewBag.SectionTitle</title>
+
+    <link rel="shortcut icon" href="~/Content/images/transport_32.png" type="image/x-icon">
+
+    @Styles.Render("~/bundles/core/css")
+
+    @RenderSection(name: "styles", required: false)
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-red-light sidebar-mini">
+    <div class="wrapper">
+        <!--START TOPBARMENU SECTION-->
+        @{ Html.RenderPartial(partialViewName: "_TopBarMenu"); }
+        <!--END TOPBARMENU SECTION-->
+        <!--START SIDEBARMENU SECTION-->
+        @{ Html.RenderPartial(partialViewName: "_SideBarMenu"); }
+        <!--END SIDEBARMENU SECTION-->
+        <!--START BODY SECTION-->
+        <div class="content-wrapper">
+            <section class="content-header">
+                @*<h1>@ViewBag.SectionTitle</h1>*@
+            </section>
+            <section class="content" id="RenderBodySection">
+                <div class="row">
+                    @RenderBody()
+                    <div id="modal-container" class="modal fade" data-backdrop="static" data-keyboard="false" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!--END BODY SECTION-->
+        <footer class="main-footer">
+            <strong>@SiteResources.Copyrights.<a href="http://www.fit.ba" class="color-red" target="_blank"> @SiteResources.FIT</a>.</strong> @SiteResources.AllRightsReserved.
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/core/js")
+
+    <script>
+        $(function () {
+            $('body').on('click', '.modal-link', function (e) {
+                e.preventDefault();
+                $(this).attr('data-target', '#modal-container');
+                $(this).attr('data-toggle', 'modal');
+            });
+
+            $('body').on('click', '.modal-close-btn', function () {
+                $('#modal-container').modal('hide');
+            });
+
+            $('#modal-container').on('hidden.bs.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+
+            $('#CancelModal').on('click', function () {
+                return false;
+            });
+
+            $("[data-toggle='tooltip']").tooltip();
+        })
+    </script>
+
+    <script>
+        //bootstrap notify configuration
+        $.notifyDefaults({
+            type: 'bg-warning btn-flat',
+            allow_dismiss: true,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            newest_on_top: true,
+            delay: 3000,
+            placement: {
+                from: "top",
+                align: "center"
+            },
+            icon_type: 'class'
+        });
+    </script>
+
+    <script>
+
+        var audio = new Audio('../Content/audio/chat-notif.mp3');
+        var chatMessagesMenuItemIsActive = $('#chat-menu-item').hasClass('active');
+
+        function CheckNumberOfMessages() {
+            $.ajax({
+                url: '@Url.Action("CheckNumberOfMessages", "ChatMessages")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                if (data.setNotif)
+                {
+                    if (chatMessagesMenuItemIsActive) {
+                        var userChatMessageDivId = $('div[id^="user-chat-"]').attr('id');
+                        var driverID = userChatMessageDivId.split('-')[2];
+
+                        $.ajax({
+                            url: '@Url.Action("LoadMessagesForSpecificDriver", "ChatMessages")',
+                            type: "GET",
+                            contentType: "application/json",
+                            data: {
+                                driverID: driverID
+                            },
+                            cache: false,
+                            success: function (data) {
+                                $('#' + userChatMessageDivId).html(data);
+                                $('#newMessageNotif').show();
+                                audio.play();
+                            },
+                            error: function () {
+                                $.notify({
+                                    icon: 'fa fa-spinner',
+                                    message: 'Došlo je do greške...'
+                                }, {
+                                    template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                                    '<span data-notify="icon"></span>' + '  ' +
+                                    '<span data-notify="message">{2}</span>' +
+                                    '</div>'
+                                });
+                            }
+                        });
+
+                        $.ajax({
+                            url: '@Url.Action("LoadContacts", "ChatMessages")',
+                            type: "GET",
+                            contentType: "application/json",
+                            cache: false,
+                            success: function (data) {
+                                $('.direct-chat-contacts').html(data);
+                            },
+                            error: function () {
+                                $.notify({
+                                    icon: 'fa fa-spinner',
+                                    message: 'Došlo je do greške...'
+                                }, {
+                                    template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                                    '<span data-notify="icon"></span>' + '  ' +
+                                    '<span data-notify="message">{2}</span>' +
+                                    '</div>'
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        $('#chat-notif').show();
+                        $('#newMessageNotif').show();
+                        audio.play();
+                    }
+                }
+            });
+            return false;
+        }
+
+        function CheckSOS() {
+            var sosAudio = new Audio('../Content/audio/sos-notif.mp3');
+
+            $.ajax({
+                url: '@Url.Action("CheckSOS", "ChatMessages")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                if (data.setNotif) {
+                    sosAudio.play();
+
+                    $.ajax({
+                        url: '@Url.Action("SetSOS", "Home")',
+                        type: 'GET',
+                        data: {
+                            latitude: data.sOSMessage.Latitude,
+                            longitude: data.sOSMessage.Longitude,
+                            text: data.sOSMessage.SOSMessageText,
+                            time: data.sOSMessage.SOSMessageTime,
+                            driverID: data.sOSMessage.DriverID,
+                            driverFullName: data.sOSMessage.DriverFullName
+                        },
+                        cache: false
+                    }).done(function (data) {
+                        $('.modal-content').html(data);
+                        $('#modal-container').modal({ show: false });
+                        $('#modal-container').modal('show');
+                    });
+                }
+            });
+
+            return false;
+        }
+
+        $('#chat-menu-item').click(function () {
+            $('#chat-notif').hide();
+            $('#newMessageNotif').hide();
+        });
+
+        //CheckNumberOfMessages();
+        //CheckSOS();
+
+        setInterval(function () {
+            CheckNumberOfMessages()
+        }, 10000);
+
+        setInterval(function () {
+            CheckSOS()
+        }, 5000);
+    </script>
+
+    @RenderSection(name: "scripts", required: false)
+</body>
+</html>

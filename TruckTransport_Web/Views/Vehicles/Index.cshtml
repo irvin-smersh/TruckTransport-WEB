@@ -1,0 +1,204 @@
+﻿@model GetVehiclesVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.Vehicles;
+}
+
+<div id="vehicles-result" class="box-border">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.Vehicles</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Add", "Vehicles")" class="modal-link btn btn-danger btn-lg"><i class="fa fa-plus"></i> @SiteResources.Add</a>
+                    </div>
+                </div>
+                <br />
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="vehicles-data-table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>@SiteResources.Name</th>
+                                <th>@SiteResources.Manufacturer</th>
+                                <th>@SiteResources.Type</th>
+                                <th>@SiteResources.YearMade</th>
+                                <th>@SiteResources.LoadCapacity</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vehicle in Model.VehiclesList)
+                            {
+                                <tr>
+                                    <td class="col-md-3">
+                                        @vehicle.naziv
+                                    </td>
+                                    <td class="col-md-2">
+                                        @vehicle.marka
+                                    </td>
+                                    <td class="col-md-2">
+                                        @vehicle.tip
+                                    </td>
+                                    <td class="col-md-2">
+                                        @vehicle.godiste
+                                    </td>
+                                    <td class="col-md-2">
+                                        @vehicle.nosivost
+                                    </td>
+                                    <td class="right" width="10%" align="right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger">@SiteResources.Actions</button>
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li><a href="@Url.Action("Edit", "Vehicles", new { vehicleID = vehicle.vozilo_id })" class="modal-link"><i class="fa fa-edit"></i>@SiteResources.Edit</a></li>
+                                                @*<li>
+                                                    <a href="javascript: Delete('@vehicle.vozilo_id');" data-toggle="confirmation" data-placement="left" data-popout="true"
+                                                       data-original-title="@SiteResources.Confirmation"
+                                                       data-btn-ok-label="@SiteResources.Yes" data-btn-ok-class="btn-danger" data-btn-ok-icon="fa fa-check"
+                                                       data-btn-cancel-label="@SiteResources.No" data-btn-cancel-class="btn-default" data-btn-cancel-icon="fa fa-remove">
+                                                        <i class="fa fa-trash-o"></i> @SiteResources.Delete
+                                                    </a>
+                                                </li>*@
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@SiteResources.Name</th>
+                                <th>@SiteResources.Manufacturer</th>
+                                <th>@SiteResources.Type</th>
+                                <th>@SiteResources.YearMade</th>
+                                <th>@SiteResources.LoadCapacity</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(
+            function () {
+                $("#vehicles-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            }
+        );
+
+        function Delete(vehicleID) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Vehicles")',
+                type: 'GET',
+                data: { vehicleID: vehicleID },
+                error: function () {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                },
+            }).done(function (data) {
+                if (data.success == true) {
+                    $.notify({
+                        icon: 'fa fa-check',
+                        message: 'Uspješno uklonjeno vozilo!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-3 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                    GetVehicles();
+                } else {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                }
+            });
+        }
+
+        function GetVehicles() {
+            $.ajax({
+                url: '@Url.Action("Index", "Vehicles")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#vehicles-result').html(data);
+                $("#vehicles-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            });
+            return false;
+        }
+    </script>
+}
+
+
+
+
+
+

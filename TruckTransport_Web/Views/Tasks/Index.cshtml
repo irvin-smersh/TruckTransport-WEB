@@ -1,0 +1,225 @@
+﻿@model GetTasksVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.Tasks;
+}
+
+<div id="tasks-result" class="box-border">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.Tasks</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Add", "Tasks")" class="btn btn-danger btn-lg"><i class="fa fa-plus"></i> @SiteResources.Add</a>
+                    </div>
+                </div>
+                <br />
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="tasks-data-table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>@SiteResources.Number</th>
+                                <th>@SiteResources.Name</th>
+                                <th>@SiteResources.Order</th>
+                                <th>@SiteResources.CheckIn</th>
+                                <th>@SiteResources.CheckOut</th>
+                                <th>@SiteResources.Location</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var task in Model.TasksList)
+                            {
+                                <tr>
+                                    <td class="col-md-1">
+                                        @task.TaskNumber
+                                    </td>
+                                    <td class="col-md-3">
+                                        @task.Name
+                                    </td>
+                                    <td class="col-md-1">
+                                        @if (task.OrderID == null)
+                                        {
+                                            @SiteResources.Unassigned
+                                        }
+                                        else
+                                        {
+                                            @SiteResources.Assigned
+                                        }
+                                    </td>
+                                    <td class="col-md-2">
+                                        @if (task.CheckIn != 0 && task.CheckIn != null)
+                                        {
+                                            @task.CheckIn
+                                        }
+                                    </td>
+                                    <td class="col-md-2">
+                                        @if (task.CheckOut != 0 && task.CheckOut != null)
+                                        {
+                                            @task.CheckOut
+                                        }
+                                    </td>
+                                    <td class="col-md-2">
+                                        @task.KnownLocation
+                                    </td>
+                                    <td class="right" width="10%" align="right">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-danger">@SiteResources.Actions</button>
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li><a href="@Url.Action("Details", "Tasks", new { taskID = task.TaskID })"><i class="fa fa-file-text-o"></i> @SiteResources.Details</a></li>
+                                                <li><a href="@Url.Action("Edit", "Tasks", new { taskID = task.TaskID })"><i class="fa fa-edit"></i> @SiteResources.Edit</a></li>
+                                                <li>
+                                                    <a href="javascript: Delete('@task.TaskID');" data-toggle="confirmation" data-placement="left" data-popout="true"
+                                                       data-original-title="@SiteResources.Confirmation"
+                                                       data-btn-ok-label="@SiteResources.Yes" data-btn-ok-class="btn-danger" data-btn-ok-icon="fa fa-check"
+                                                       data-btn-cancel-label="@SiteResources.No" data-btn-cancel-class="btn-default" data-btn-cancel-icon="fa fa-remove">
+                                                        <i class="fa fa-trash-o"></i> @SiteResources.Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@SiteResources.Number</th>
+                                <th>@SiteResources.Name</th>
+                                <th>@SiteResources.Order</th>
+                                <th>@SiteResources.CheckIn</th>
+                                <th>@SiteResources.CheckOut</th>
+                                <th>@SiteResources.Location</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(
+            function () {
+                $("#tasks-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            }
+        );
+
+        function Delete(taskID) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Tasks")',
+                type: 'GET',
+                data: { taskID: taskID },
+                error: function () {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                },
+            }).done(function (data) {
+                if (data.success) {
+                    $.notify({
+                        icon: 'fa fa-check',
+                        message: 'Uspješno uklonjen zadatak!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-3 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                    GetTasks();
+                } else {
+                    $.notify({
+                        icon: 'fa fa-remove',
+                        message: 'Došlo je do greške!'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                }
+            });
+        }
+
+        function GetTasks() {
+            $.ajax({
+                url: '@Url.Action("Index", "Tasks")',
+                type: 'GET',
+                cache: false
+            }).done(function (data) {
+                $('#tasks-result').html(data);
+                $("#tasks-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    }
+                });
+
+                $('[data-toggle=confirmation]').confirmation({
+                    rootSelector: '[data-toggle=confirmation]',
+                });
+            });
+            return false;
+        }
+    </script>
+}
+
+
+
+
+
+
+
+

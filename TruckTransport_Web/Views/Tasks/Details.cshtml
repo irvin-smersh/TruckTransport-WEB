@@ -1,0 +1,139 @@
+﻿@model GetTaskDetailsVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.TaskDetails;
+}
+
+<div id="task-details" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.TaskDetails</h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("Edit", "Tasks", new { taskID = Model.TaskID })" class="btn bg-red btn-lg"><i class="fa fa-edit"> @SiteResources.Edit</i></a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-body">
+                                    <h4 class="text-center">@SiteResources.BasicInfo</h4>
+                                    <br />
+                                    <p><strong>@SiteResources.TaskNumber:</strong> @Model.TaskNumber</p>
+                                    <p><strong>@SiteResources.Name:</strong> @Model.Name</p>
+                                    <p><strong>@SiteResources.Description:</strong> @Model.Description</p>
+                                    <p><strong>@SiteResources.CheckIn:</strong> @Model.CheckIn</p>
+                                    <p><strong>@SiteResources.CheckOut:</strong> @Model.CheckOut</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box">
+                                <div class="box-body">
+                                    <h4 class="text-center">@SiteResources.Order</h4>
+                                    <br />
+                                    @if (Model.OrderID == null)
+                                    {
+                                        <p class="text-center"><strong>@SiteResources.TaskNotAssigned</strong></p>
+                                    }
+                                    else
+                                    {
+                                        <p><strong>@SiteResources.CreationTime:</strong> @Model.OrderCreationTime</p>
+                                        <p><strong>@SiteResources.OrderCondition:</strong> @Model.OrderCondition</p>
+                                        <p><strong>@SiteResources.Driver:</strong> @Model.Driver</p>
+                                        <p><strong>@SiteResources.Vehicle:</strong> @Model.Vehicle</p>
+                                    }
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+            </div>
+
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.MapLocation</h3>
+                    <div>
+                        <br />
+                    </div>
+                    <p><strong>@SiteResources.Name:</strong> @Model.KnownLocation</p>
+                    <p><strong>@SiteResources.Latitude:</strong> @Model.Latitude</p>
+                    <p><strong>@SiteResources.Longitude:</strong> @Model.Longitude</p>                                 
+                </div>
+                <div class="box-body">
+                    <div id="map_canvas" style="width: 100%; height: 584px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBK03oaLvwLxn9BvQYV7pI8Ov2_DIIbex8"></script>
+    <script>
+        window.onload = function () {
+            initialize();
+        };
+
+        function initialize() {
+            var x = "@Model.Latitude";
+            var y = "@Model.Longitude";
+
+            x = x.replace(",", ".");
+            y = y.replace(",", ".");
+
+            var mapOptions = {
+                center: new google.maps.LatLng(x, y),
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            var map = new google.maps.Map(document.getElementById("map_canvas"),
+              mapOptions);
+
+            // create a marker
+            var latlng = new google.maps.LatLng(x, y);
+
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                animation: google.maps.Animation.DROP,
+                icon: "../Content/images/marker.png",
+                title: '@Html.Raw(Model.Name)'
+            });
+
+            marker.addListener('click', function () {
+                toggleBounce;
+                infowindow.open(map, marker);
+            });
+
+            function toggleBounce() {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+
+            google.maps.event.addListener(marker, 'click', function () {
+                map.setZoom(20);
+                map.setCenter(marker.getPosition());
+            });
+
+            google.maps.event.addListener(map, 'center_changed', function () {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function () {
+                    map.panTo(marker.getPosition());
+                }, 3000);
+            });
+        }
+    </script>
+}
+
+

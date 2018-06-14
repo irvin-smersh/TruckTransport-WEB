@@ -1,0 +1,101 @@
+﻿@model GetAuditLoggingsVM
+
+@{
+    ViewBag.SectionTitle = SiteResources.AuditLoggings;
+}
+
+<div id="audit-loggings-result" class="box-border">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">@SiteResources.AuditLoggings</h3>
+                </div>
+                <br />
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="audit-loggings-data-table" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>@SiteResources.Username</th>
+                                <th>@SiteResources.IPAddress</th>
+                                <th>@SiteResources.URL</th>
+                                <th>@SiteResources.EventTime</th>                              
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var auditLogging in Model.AuditLoggingsList)
+                            {
+                                <tr>
+                                    <td class="col-md-3">
+                                        @auditLogging.Username
+                                    </td>
+                                    <td class="col-md-3">
+                                        @auditLogging.IPAddress
+                                    </td>
+                                    <td class="col-md-3">
+                                        @auditLogging.URL
+                                    </td>
+                                    <td class="col-md-3">
+                                        @auditLogging.EventTime
+                                    </td>                    
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>@SiteResources.Username</th>
+                                <th>@SiteResources.IPAddress</th>
+                                <th>@SiteResources.URL</th>
+                                <th>@SiteResources.EventTime</th>            
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="https://cdn.datatables.net/plug-ins/1.10.15/sorting/date-de.js"></script>
+    <script>
+        $(document).ready(
+            function () {
+                $("#audit-loggings-data-table").DataTable({
+                    "language": {
+                        "lengthMenu": "Prikaži _MENU_ zapisa po stranici",
+                        "zeroRecords": "Nema pronađenih zapisa.",
+                        "info": "Prikaz _START_ do _END_ od _TOTAL_ zapisa",
+                        "infoEmpty": "Prikaz 0 do 0 od 0 zapisa",
+                        "infoFiltered": "",
+                        "infoPostFix": "",
+                        "search": "Pretraga:",
+                        "paginate": {
+                            "sFirst": "Prva",
+                            "sLast": "Posljednja",
+                            "sNext": "Sljedeća",
+                            "sPrevious": "Prethodna"
+                        },
+                    },
+                    columnDefs: [
+                        { type: 'de_datetime', targets: 3 },
+                    ],
+                    "order": [[3, "desc"]]
+                });              
+            }
+        );
+    </script>
+}
+
+
+
+
+
+

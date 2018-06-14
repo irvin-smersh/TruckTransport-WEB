@@ -1,0 +1,284 @@
+﻿@model ChatVM
+@using System.Linq
+
+@{
+    ViewBag.SectionTitle = SiteResources.Messages;
+}
+
+<div id="chat-messages" class="box-border">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- DIRECT CHAT -->
+            <div class="box box-danger direct-chat direct-chat-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@SiteResources.Messages</h3>
+
+                    <div class="box-tools pull-right">
+                        <span id="newMessageNotif" data-toggle="tooltip" title="Nova poruka" class="badge bg-red" style="display:none">!</span>                      
+                        <button id="open-driver-list" type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Vozači"
+                                data-widget="chat-pane-toggle">
+                            <i class="fa fa-comments"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <!-- Conversations are loaded here -->
+                    <div id="user-chat-@Model.FirstDriverID">
+                        <div class="direct-chat-messages">
+                            @foreach (var user in Model.ChatUsersMessages)
+                            {
+                                foreach (var userMessage in user.UserMessages)
+                                {
+                                    if (userMessage.FromDriver)
+                                    {
+                                    <!-- Message. Default to the left -->
+                                        <div class="direct-chat-msg">
+                                            <div class="direct-chat-info clearfix">
+                                                <span class="direct-chat-name pull-left">@user.DriverFullName</span>
+                                                <span class="direct-chat-timestamp pull-right">@userMessage.CreationTime</span>
+                                            </div>
+                                            <!-- /.direct-chat-info -->
+                                            <img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">
+                                            <!-- /.direct-chat-img -->
+                                            <div class="direct-chat-text">
+                                                @userMessage.MessageText
+                                            </div>
+                                            <!-- /.direct-chat-text -->
+                                        </div>
+                                    <!-- /.direct-chat-msg -->
+                                    }
+                                    else
+                                    {
+                                        <!-- Message to the right -->
+                                        <div class="direct-chat-msg right">
+                                            <div class="direct-chat-info clearfix">
+                                                <span class="direct-chat-name pull-right">@SiteResources.Dispatcher</span>
+                                                <span class="direct-chat-timestamp pull-left">@userMessage.CreationTime</span>
+                                            </div>
+                                            <!-- /.direct-chat-info -->
+                                            <img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">
+                                            <!-- /.direct-chat-img -->
+                                            <div class="direct-chat-text">
+                                                @userMessage.MessageText
+                                            </div>
+                                            <!-- /.direct-chat-text -->
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                    <!--/.direct-chat-messages-->
+                    <!-- Contacts are loaded here -->
+                    <div class="direct-chat-contacts">
+                        <ul class="contacts-list">
+                            @foreach (var user in Model.ChatUsersMessages)
+                            {
+                                <li>
+                                    <a id="loadMessages-user-@user.DriverID" href="javascript: loadMessages('@user.DriverID')">
+                                        <img class="contacts-list-img" src="../Content/images/user_avatar_128.png" alt="User Image">
+                                        <div class="contacts-list-info">
+                                            <span class="contacts-list-name">
+                                                @user.DriverFullName
+                                                @if (user.UserMessages != null && user.UserMessages.Count != 0)
+                                                {
+                                                    <small class="contacts-list-date pull-right">@user.UserMessages.First().CreationTime</small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="contacts-list-date pull-right"></small>
+                                                }
+                                            </span>
+                                            @if (user.UserMessages != null && user.UserMessages.Count != 0)
+                                            {
+                                                <span class="contacts-list-msg">@user.UserMessages.First().MessageText</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="contacts-list-msg"></span>
+                                            }
+                                        </div>
+                                        <!-- /.contacts-list-info -->
+                                    </a>
+                                </li>
+                                <!-- End Contact Item -->
+                            }                           
+                        </ul>
+                        <!-- /.contacts-list -->
+                    </div>
+                    <!-- /.direct-chat-pane -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">                  
+                    <div id="user-send-message-@Model.FirstDriverID" class="input-group">
+                        <input id="message-text" type="text" name="message" placeholder="@SiteResources.EnterMessage" class="form-control">
+                        <span class="input-group-btn">
+                            <button id="send-message" type="button" class="btn btn-danger btn-flat">@SiteResources.Send</button>
+                        </span>
+                    </div>       
+                </div>
+                <!-- /.box-footer-->
+            </div>
+            <!--/.direct-chat -->
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+   <script>
+       $('#message-text').focus(function () {
+           $(this).attr('autocomplete', 'off');
+           $('#chat-notif').hide();
+           $('#newMessageNotif').hide();
+       });
+
+       $('#send-message').click(function () {
+           if ($('#message-text').val().trim().length !== 0) {
+
+               var userSendMessageID = $('div[id^="user-send-message-"]').attr('id');
+               var userChatID = $('div[id^="user-chat-"]').attr('id');
+               var driverID = userSendMessageID.split('-')[3];
+
+               var messageText = $('#message-text').val();
+               $('#message-text').val('');
+
+               $.ajax({
+                   url: '@Url.Action("SendMessage", "ChatMessages")',
+                   type: "POST",
+                   dataType: "JSON",
+                   data: {
+                       driverID: driverID,
+                       messageText: messageText
+                   },
+                   success: function (data) {
+                       if (data.success) {
+                           var newMessage = '<div class="direct-chat-msg right">' +
+                                                '<div class="direct-chat-info clearfix">' +
+                                                    '<span class="direct-chat-name pull-right">' + '@SiteResources.Dispatcher' + '</span>' +
+                                                    '<span class="direct-chat-timestamp pull-left">' + '@DateTime.Now.ToString("dd.MM.yyyy HH:mm")' + '</span>' +
+                                                '</div>' +
+                                                '<img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">' +
+                                                '<div class="direct-chat-text">' + messageText + '</div>' +
+                                            '</div>';
+                           $('.direct-chat-messages').prepend(newMessage);
+                       }
+                       else {
+                           console.log("message-fail");
+                       }
+                   },
+                   error: function () {
+                       $.notify({
+                           icon: 'fa fa-spinner',
+                           message: 'Došlo je do greške...'
+                       }, {
+                           template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                           '<span data-notify="icon"></span>' + '  ' +
+                           '<span data-notify="message">{2}</span>' +
+                           '</div>'
+                       });
+                   }
+               });
+           }
+       });
+
+       $('#message-text').keypress(function (key) {
+           if(key.which == 13){
+               if ($('#message-text').val().trim().length !== 0) {
+
+                   var userSendMessageID = $('div[id^="user-send-message-"]').attr('id');
+                   var userChatID = $('div[id^="user-chat-"]').attr('id');
+                   var driverID = userSendMessageID.split('-')[3];
+
+                   var messageText = $('#message-text').val();
+                   $('#message-text').val('');
+
+                   $.ajax({
+                       url: '@Url.Action("SendMessage", "ChatMessages")',
+                       type: "POST",
+                       dataType: "JSON",
+                       data: {
+                           driverID: driverID,
+                           messageText: messageText
+                       },
+                       success: function (data) {
+                           if (data.success) {
+                               var newMessage = '<div class="direct-chat-msg right">' +
+                                                '<div class="direct-chat-info clearfix">' +
+                                                    '<span class="direct-chat-name pull-right">' + '@SiteResources.Dispatcher' + '</span>' +
+                                                    '<span class="direct-chat-timestamp pull-left">' + '@DateTime.Now.ToString("dd.MM.yyyy HH:mm")' + '</span>' +
+                                                '</div>' +
+                                                '<img class="direct-chat-img" src="../Content/images/user_avatar_128.png" alt="message user image">' +
+                                                '<div class="direct-chat-text">' + messageText + '</div>' +
+                                                '</div>';                                                
+                               $('.direct-chat-messages').prepend(newMessage);                              
+                           }
+                           else {
+                               console.log("message-fail");
+                           }
+                       },
+                       error: function () {
+                           $.notify({
+                               icon: 'fa fa-spinner',
+                               message: 'Došlo je do greške...'
+                           }, {
+                               template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                               '<span data-notify="icon"></span>' + '  ' +
+                               '<span data-notify="message">{2}</span>' +
+                               '</div>'
+                           });
+                       }
+                   });
+               }
+           }
+       });
+    </script>
+    
+    <script>
+        function loadMessages(driverID) {
+            var userChatMessageDivId = $('div[id^="user-chat-"]').attr('id');
+            var userSendMessageId = $('div[id^="user-send-message-"]').attr('id');
+       
+            $('#chat-notif').hide();
+            $('#newMessageNotif').hide();
+
+            $.notify({
+                icon: 'fa fa-spinner',
+                message: 'Učitavanje...'
+            }, {
+                template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                '<span data-notify="icon"></span>' + '  ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+            });
+
+            $.ajax({
+                url: '@Url.Action("LoadMessagesForSpecificDriver", "ChatMessages")',
+                type: "GET",
+                contentType: "application/json",       
+                data: {
+                    driverID: driverID
+                },
+                cache: false,
+                success: function (data) {                   
+                    $('#' + userChatMessageDivId).html(data);
+                    $('#open-driver-list').trigger('click');
+                    $('#' + userChatMessageDivId).attr('id', 'user-chat-' + driverID);
+                    $('#' + userSendMessageId).attr('id', 'user-send-message-' + driverID);
+                },
+                error: function () {
+                    $.notify({
+                        icon: 'fa fa-spinner',
+                        message: 'Došlo je do greške...'
+                    }, {
+                        template: '<div data-notify="container" class="col-md-2 alert btn {0} text-center" role="alert">' +
+                        '<span data-notify="icon"></span>' + '  ' +
+                        '<span data-notify="message">{2}</span>' +
+                        '</div>'
+                    });
+                }
+            });
+        }
+    </script>
+}
